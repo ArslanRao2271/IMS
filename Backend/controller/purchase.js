@@ -3,12 +3,16 @@ const purchaseStock = require("./purchaseStock");
 
 // Add Purchase Details
 const addPurchase = (req, res) => {
+  console.log(req.body);
+
   const addPurchaseDetails = new Purchase({
     userID: req.body.userID,
     ProductID: req.body.productID,
     QuantityPurchased: req.body.quantityPurchased,
     PurchaseDate: req.body.purchaseDate,
     TotalPurchaseAmount: req.body.totalPurchaseAmount,
+    Description: req.body.description,
+    Supplier: req.body.supplier,
   });
 
   addPurchaseDetails
@@ -24,7 +28,7 @@ const addPurchase = (req, res) => {
 
 // Get All Purchase Data
 const getPurchaseData = async (req, res) => {
-  const findAllPurchaseData = await Purchase.find({"userID": req.params.userID})
+  const findAllPurchaseData = await Purchase.find({ userID: req.params.userID })
     .sort({ _id: -1 })
     .populate("ProductID"); // -1 for descending order
   res.json(findAllPurchaseData);
@@ -33,7 +37,7 @@ const getPurchaseData = async (req, res) => {
 // Get total purchase amount
 const getTotalPurchaseAmount = async (req, res) => {
   let totalPurchaseAmount = 0;
-  const purchaseData = await Purchase.find({"userID": req.params.userID});
+  const purchaseData = await Purchase.find({ userID: req.params.userID });
   purchaseData.forEach((purchase) => {
     totalPurchaseAmount += purchase.TotalPurchaseAmount;
   });

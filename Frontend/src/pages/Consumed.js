@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import AddSale from "../components/AddSale";
 import AuthContext from "../AuthContext";
+import AddConsumed from "../components/AddConsumed";
 
-function Sales() {
+function Consumed() {
   const [showSaleModal, setShowSaleModal] = useState(false);
   const [sales, setAllSalesData] = useState([]);
   const [products, setAllProducts] = useState([]);
@@ -19,7 +19,7 @@ function Sales() {
 
   // Fetching Data of All Sales
   const fetchSalesData = () => {
-    fetch(`http://localhost:4000/api/sales/get/${authContext.user}`)
+    fetch(`http://localhost:4000/api/consumed/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllSalesData(data);
@@ -60,7 +60,7 @@ function Sales() {
     <div className="col-span-12 lg:col-span-10  flex justify-center">
       <div className=" flex flex-col gap-5 w-11/12">
         {showSaleModal && (
-          <AddSale
+          <AddConsumed
             addSaleModalSetting={addSaleModalSetting}
             products={products}
             stores={stores}
@@ -80,7 +80,7 @@ function Sales() {
                 onClick={addSaleModalSetting}
               >
                 {/* <Link to="/inventory/add-product">Add Product</Link> */}
-                Add Sales
+                Add Consumption
               </button>
             </div>
           </div>
@@ -91,16 +91,13 @@ function Sales() {
                   Product Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Store Name
+                  Consumed Quantity
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Stock Sold
+                  Consumption Date
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Sales Date
-                </th>
-                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
-                  Total Sale Amount
+                  Total Consumed Amount
                 </th>
               </tr>
             </thead>
@@ -113,16 +110,13 @@ function Sales() {
                       {element.ProductID?.name}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.StoreID?.name}
+                      {element.ConsumedQuantity}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.StockSold}
+                      {element.ConsumptionDate}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.SaleDate}
-                    </td>
-                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      {element.TotalSaleAmount}
+                      {element.TotalConsumedAmount}
                     </td>
                   </tr>
                 );
@@ -135,4 +129,4 @@ function Sales() {
   );
 }
 
-export default Sales;
+export default Consumed;

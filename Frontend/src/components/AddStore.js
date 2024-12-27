@@ -1,18 +1,18 @@
 import { Fragment, useRef, useState, useContext } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import UploadImage from "./UploadImage";
+// import UploadImage from "./UploadImage";
 import AuthContext from "../AuthContext";
 
-export default function AddStore() {
+export default function AddStore({ handlePageUpdate }) {
   const authContext = useContext(AuthContext);
   const [form, setForm] = useState({
     userId: authContext.user,
     name: "",
-    category: "",
+    // category: "",
     address: "",
     city: "",
-    image: "",
+    // image: "",
   });
 
   const handleInputChange = (e) => {
@@ -32,6 +32,7 @@ export default function AddStore() {
     })
       .then((result) => {
         alert("STORE ADDED");
+        handlePageUpdate();
         setOpen(false);
       })
       .catch((err) => console.log(err));
@@ -108,7 +109,7 @@ export default function AddStore() {
                           <div>
                             <label
                               htmlFor="name"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              className="block mt-2 mb-2 text-sm font-medium text-gray-900"
                             >
                               Name
                             </label>
@@ -125,7 +126,7 @@ export default function AddStore() {
                           <div>
                             <label
                               htmlFor="city"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              className="block mt-2 mb-2 text-sm font-medium text-gray-900"
                             >
                               City
                             </label>
@@ -139,7 +140,7 @@ export default function AddStore() {
                               placeholder="Enter City Name"
                             />
                           </div>
-                          <div>
+                          {/* <div>
                             <label
                               htmlFor="category"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -164,11 +165,11 @@ export default function AddStore() {
                               <option value="SuperMart">SuperMart</option>
                               <option value="Phones">Phones</option>
                             </select>
-                          </div>
+                          </div> */}
                           <div className="sm:col-span-2">
                             <label
                               htmlFor="address"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              className="block mt-2 mb-2 text-sm font-medium text-gray-900"
                             >
                               Address
                             </label>
@@ -184,9 +185,9 @@ export default function AddStore() {
                           </div>
                         </div>
                         <div className="flex items-center space-x-4">
-                          <div>
+                          {/* <div>
                             <UploadImage uploadImage={uploadImage} />
-                            {/* <label
+                            <label
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                               for="small_size"
                             >
@@ -196,8 +197,8 @@ export default function AddStore() {
                               className="block w-full mb-5 text-xs text-gray-900 border  cursor-pointer bg-gray-50 dark:text-gray-400 focus:outline-none "
                               id="small_size"
                               type="file"
-                            /> */}
-                          </div>
+                            />
+                          </div> */}
 
                           {/* <button
                             type="submit"

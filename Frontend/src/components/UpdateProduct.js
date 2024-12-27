@@ -5,13 +5,15 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 export default function UpdateProduct({
   updateProductData,
   updateModalSetting,
+  handlePageUpdate,
 }) {
-  const { _id, name, manufacturer, description } = updateProductData;
+  const { _id, name, manufacturer, description, stock } = updateProductData;
   const [product, setProduct] = useState({
     productID: _id,
     name: name,
     manufacturer: manufacturer,
     description: description,
+    stock,
   });
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -31,6 +33,7 @@ export default function UpdateProduct({
     })
       .then((result) => {
         alert("Product Updated");
+        handlePageUpdate();
         setOpen(false);
       })
       .catch((err) => console.log(err));
@@ -89,7 +92,7 @@ export default function UpdateProduct({
                           <div>
                             <label
                               htmlFor="name"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              className="block mt-2 mb-2 text-sm font-medium text-gray-900"
                             >
                               Name
                             </label>
@@ -108,7 +111,7 @@ export default function UpdateProduct({
                           <div>
                             <label
                               htmlFor="manufacturer"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              className="block mb-2 mt-2 text-sm font-medium text-gray-900"
                             >
                               Manufacturer
                             </label>
@@ -124,10 +127,29 @@ export default function UpdateProduct({
                               placeholder="Ex. Apple"
                             />
                           </div>
+                          <div>
+                            <label
+                              for="stock"
+                              className="block mb-2 text-sm font-medium text-gray-900"
+                            >
+                              Quantity
+                            </label>
+                            <input
+                              type="number"
+                              name="stock"
+                              id="stock"
+                              value={product.stock}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="Quantity"
+                            />
+                          </div>
                           <div className="sm:col-span-2">
                             <label
                               htmlFor="description"
-                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              className="block mb-2 text-sm font-medium text-gray-900"
                             >
                               Description
                             </label>

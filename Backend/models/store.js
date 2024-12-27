@@ -4,17 +4,17 @@ const StoreSchema = new mongoose.Schema(
   {
     userID: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'users',
+      ref: "users",
       required: true,
     },
     name: {
       type: String,
       required: true,
     },
-    category: {
-      type: String,
-      required: true,
-    },
+    // category: {
+    //   type: String,
+    //   required: true,
+    // },
     address: {
       type: String,
       required: true,
@@ -23,10 +23,10 @@ const StoreSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
-      type: String,
-      required: true,
-    },
+    // image: {
+    //   type: String,
+    //   required: true,
+    // },
   },
   { timestamps: true }
 );

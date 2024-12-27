@@ -40,7 +40,6 @@ function PurchaseDetails() {
     setPurchaseModal(!showPurchaseModal);
   };
 
-  
   // Handle Page Update
   const handlePageUpdate = () => {
     setUpdatePage(!updatePage);
@@ -54,7 +53,7 @@ function PurchaseDetails() {
             addSaleModalSetting={addSaleModalSetting}
             products={products}
             handlePageUpdate={handlePageUpdate}
-            authContext = {authContext}
+            authContext={authContext}
           />
         )}
         {/* Table  */}
@@ -108,7 +107,7 @@ function PurchaseDetails() {
                         : element.PurchaseDate}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
-                      ${element.TotalPurchaseAmount}
+                      {element.TotalPurchaseAmount}
                     </td>
                   </tr>
                 );

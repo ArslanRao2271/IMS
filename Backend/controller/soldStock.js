@@ -1,14 +1,12 @@
-const Sales = require("../models/sales");
-const Product = require("../models/Product");
-
+// const Sales = require("../models/sales");
+const Product = require("../models/product");
 
 const soldStock = async (productID, stockSoldData) => {
-
   // Updating sold stock
   try {
-    
     const myProductData = await Product.findOne({ _id: productID });
-    let myUpdatedStock = myProductData.stock - stockSoldData;
+    let myUpdatedStock =
+      parseInt(myProductData.stock) - parseInt(stockSoldData);
     console.log("MY SOLD STOCK: ", myUpdatedStock);
 
     const SoldStock = await Product.findByIdAndUpdate(
@@ -19,7 +17,6 @@ const soldStock = async (productID, stockSoldData) => {
       { new: true }
     );
     console.log(SoldStock);
-
   } catch (error) {
     console.error("Error updating sold stock ", error);
   }

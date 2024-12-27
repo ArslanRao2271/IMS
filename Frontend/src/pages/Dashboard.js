@@ -136,7 +136,7 @@ function Dashboard() {
     <>
       <div className="grid grid-cols-1 col-span-12 lg:col-span-10 gap-6 md:grid-cols-3 lg:grid-cols-4  p-4 ">
         <article className="flex flex-col gap-4 rounded-lg border  border-gray-100 bg-white p-6  ">
-          <div className="inline-flex gap-2 self-end rounded bg-green-100 p-1 text-green-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-green-100 p-1 text-green-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -153,7 +153,7 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
@@ -162,16 +162,16 @@ function Dashboard() {
 
             <p>
               <span className="text-2xl font-medium text-gray-900">
-                ${saleAmount}
+                {saleAmount}
               </span>
-
-              <span className="text-xs text-gray-500"> from $240.94 </span>
+              {/* 
+              <span className="text-xs text-gray-500"> from $240.94 </span> */}
             </p>
           </div>
         </article>
 
         <article className="flex flex-col  gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -188,7 +188,7 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
@@ -198,15 +198,15 @@ function Dashboard() {
             <p>
               <span className="text-2xl font-medium text-gray-900">
                 {" "}
-                ${purchaseAmount}{" "}
+                {purchaseAmount}{" "}
               </span>
 
-              <span className="text-xs text-gray-500"> from $404.32 </span>
+              {/* <span className="text-xs text-gray-500"> from $404.32 </span> */}
             </p>
           </div>
         </article>
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -223,7 +223,7 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
@@ -241,7 +241,7 @@ function Dashboard() {
           </div>
         </article>
         <article className="flex flex-col   gap-4 rounded-lg border border-gray-100 bg-white p-6 ">
-          <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
+          {/* <div className="inline-flex gap-2 self-end rounded bg-red-100 p-1 text-red-600">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -258,7 +258,7 @@ function Dashboard() {
             </svg>
 
             <span className="text-xs font-medium"> 67.81% </span>
-          </div>
+          </div> */}
 
           <div>
             <strong className="block text-sm font-medium text-gray-500">
@@ -281,12 +281,12 @@ function Dashboard() {
               options={chart.options}
               series={chart.series}
               type="bar"
-              width="500"
+              width="800"
             />
           </div>
-          <div>
+          {/* <div>
             <Doughnut data={data} />
-          </div>
+          </div> */}
         </div>
       </div>
     </>

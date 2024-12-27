@@ -4,12 +4,15 @@ const productRoute = require("./router/product");
 const storeRoute = require("./router/store");
 const purchaseRoute = require("./router/purchase");
 const salesRoute = require("./router/sales");
+const consumedRoute = require("./router/consumed");
 const cors = require("cors");
 const User = require("./models/users");
-const Product = require("./models/Product");
-
+const Consumed = require("./models/consumed.js");
+const connectdb = require("./db/index.js");
 
 const app = express();
+connectdb();
+
 const PORT = 4000;
 main();
 app.use(express.json());
@@ -26,6 +29,8 @@ app.use("/api/purchase", purchaseRoute);
 
 // Sales API
 app.use("/api/sales", salesRoute);
+
+app.use("/api/consumed", consumedRoute);
 
 // ------------- Signin --------------
 let userAuthCheck;
@@ -78,14 +83,14 @@ app.post("/api/register", (req, res) => {
   console.log("request: ", req.body);
 });
 
-
-app.get("/testget", async (req,res)=>{
-  const result = await Product.findOne({ _id: '6429979b2e5434138eda1564'})
-  res.json(result)
-
-})
+app.get("/testget", async (req, res) => {
+  const result = await Consumed.find({});
+  res.json(result);
+});
 
 // Here we are listening to the server
-app.listen(PORT, () => {
-  console.log("I am live again");
+app.listen(process.env.PORT, () => {
+  console.log(
+    `server is working at port:${process.env.PORT} in ${process.env.NODE_ENV} mode`
+  );
 });

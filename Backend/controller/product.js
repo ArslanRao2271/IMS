@@ -1,4 +1,4 @@
-const Product = require("../models/Product");
+const Product = require("../models/product");
 const Purchase = require("../models/purchase");
 const Sales = require("../models/sales");
 
@@ -9,7 +9,7 @@ const addProduct = (req, res) => {
     userID: req.body.userId,
     name: req.body.name,
     manufacturer: req.body.manufacturer,
-    stock: 0,
+    stock: req.body.stock,
     description: req.body.description,
   });
 
@@ -33,16 +33,12 @@ const getAllProducts = async (req, res) => {
 
 // Delete Selected Product
 const deleteSelectedProduct = async (req, res) => {
-  const deleteProduct = await Product.deleteOne(
-    { _id: req.params.id }
-  );
-  const deletePurchaseProduct = await Purchase.deleteOne(
-    { ProductID: req.params.id }
-  );
+  const deleteProduct = await Product.deleteOne({ _id: req.params.id });
+  const deletePurchaseProduct = await Purchase.deleteOne({
+    ProductID: req.params.id,
+  });
 
-  const deleteSaleProduct = await Sales.deleteOne(
-    { ProductID: req.params.id }
-  );
+  const deleteSaleProduct = await Sales.deleteOne({ ProductID: req.params.id });
   res.json({ deleteProduct, deletePurchaseProduct, deleteSaleProduct });
 };
 
@@ -55,6 +51,7 @@ const updateSelectedProduct = async (req, res) => {
         name: req.body.name,
         manufacturer: req.body.manufacturer,
         description: req.body.description,
+        stock: req.body.stock,
       },
       { new: true }
     );

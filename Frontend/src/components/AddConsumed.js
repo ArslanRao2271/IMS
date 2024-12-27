@@ -1,40 +1,42 @@
-import { Fragment, useContext, useRef, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon } from "@heroicons/react/24/outline";
-import AuthContext from "../AuthContext";
 
-export default function AddProduct({
-  addProductModalSetting,
+export default function AddConsumed({
+  addSaleModalSetting,
+  products,
+  stores,
   handlePageUpdate,
+  authContext,
 }) {
-  const authContext = useContext(AuthContext);
-  const [product, setProduct] = useState({
-    userId: authContext.user,
-    name: "",
-    manufacturer: "",
-    description: "",
-    stock: "",
+  const [sale, setSale] = useState({
+    userID: authContext.user,
+    productID: "",
+    consumedQuantity: "",
+    consumptionDate: "",
+    totalConsumedAmount: "",
   });
-  console.log("----", product);
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
 
+  // Handling Input Change for input fields
   const handleInputChange = (key, value) => {
-    setProduct({ ...product, [key]: value });
+    setSale({ ...sale, [key]: value });
   };
 
-  const addProduct = () => {
-    fetch("http://localhost:4000/api/product/add", {
+  // POST Data
+  const addSale = () => {
+    fetch("http://localhost:4000/api/consumed/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
       },
-      body: JSON.stringify(product),
+      body: JSON.stringify(sale),
     })
       .then((result) => {
-        alert("Product ADDED");
+        alert("Consumption ADDED");
         handlePageUpdate();
-        addProductModalSetting();
+        addSaleModalSetting();
       })
       .catch((err) => console.log(err));
   };
@@ -61,7 +63,7 @@ export default function AddProduct({
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0 ">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -71,7 +73,7 @@ export default function AddProduct({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg overflow-y-scroll">
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -83,81 +85,49 @@ export default function AddProduct({
                     <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left ">
                       <Dialog.Title
                         as="h3"
-                        className="text-lg font-semibold leading-6 text-gray-900 "
+                        className="text-lg  py-4 font-semibold leading-6 text-gray-900 "
                       >
-                        Add Product
+                        Add Sale
                       </Dialog.Title>
                       <form action="#">
                         <div className="grid gap-4 mb-4 sm:grid-cols-2">
                           <div>
                             <label
-                              htmlFor="name"
-                              className="block mt-2 mb-2 text-sm font-medium text-gray-900"
-                            >
-                              Name
-                            </label>
-                            <input
-                              type="text"
-                              name="name"
-                              id="name"
-                              value={product.name}
-                              onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
-                              }
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="Name"
-                            />
-                          </div>
-                          <div>
-                            <label
-                              htmlFor="manufacturer"
-                              className="block mt-2 mb-2 text-sm font-medium text-gray-900"
-                            >
-                              Manufacturer
-                            </label>
-                            <input
-                              type="text"
-                              name="manufacturer"
-                              id="manufacturer"
-                              value={product.manufacturer}
-                              onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
-                              }
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="Manufacturer"
-                            />
-                          </div>
-                          {/* <div>
-                            <label
-                              for="price"
+                              htmlFor="productID"
                               className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Price
+                              Product Name
                             </label>
-                            <input
-                              type="number"
-                              name="price"
-                              id="price"
-                              value={product.price}
+                            <select
+                              id="productID"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              name="productID"
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
-                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="$299"
-                            />
-                          </div> */}
+                            >
+                              <option selected="">Select Products</option>
+                              {products.map((element, index) => {
+                                return (
+                                  <option key={element._id} value={element._id}>
+                                    {element.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div>
                           <div>
                             <label
-                              for="stock"
-                              className="block mb-2 text-sm font-medium text-gray-900"
+                              htmlFor="consumedQuantity"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Quantity
+                              Consumed Quantity
                             </label>
                             <input
                               type="number"
-                              name="stock"
-                              id="stock"
-                              value={product.stock}
+                              name="consumedQuantity"
+                              id="consumedQuantity"
+                              value={sale.consumedQuantity}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
@@ -166,30 +136,72 @@ export default function AddProduct({
                             />
                           </div>
 
-                          <div className="sm:col-span-2">
+                          {/* <div>
                             <label
-                              htmlFor="description"
-                              className="block mb-2 text-sm font-medium text-gray-900"
+                              htmlFor="storeID"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                              Description
+                              Store Name
                             </label>
-                            <textarea
-                              id="description"
-                              rows="5"
-                              name="description"
-                              className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                              placeholder="Write a description..."
-                              value={product.description}
+                            <select
+                              id="storeID"
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              name="storeID"
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
                             >
-                              Standard glass, 3.8GHz 8-core 10th-generation
-                              Intel Core i7 processor, Turbo Boost up to 5.0GHz,
-                              16GB 2666MHz DDR4 memory, Radeon Pro 5500 XT with
-                              8GB of GDDR6 memory, 256GB SSD storage, Gigabit
-                              Ethernet, Magic Mouse 2, Magic Keyboard - US
-                            </textarea>
+                              <option selected="">Select Store</option>
+                              {stores.map((element, index) => {
+                                return (
+                                  <option key={element._id} value={element._id}>
+                                    {element.name}
+                                  </option>
+                                );
+                              })}
+                            </select>
+                          </div> */}
+                          <div>
+                            <label
+                              htmlFor="totalConsumedAmount"
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                              Total Consumed Amount
+                            </label>
+                            <input
+                              type="number"
+                              name="totalConsumedAmount"
+                              id="price"
+                              value={sale.totalConsumedAmount}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="Amount"
+                            />
+                          </div>
+                          <div className="h-fit w-fit">
+                            {/* <Datepicker
+                              onChange={handleChange}
+                              show={show}
+                              setShow={handleClose}
+                            /> */}
+                            <label
+                              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                              htmlFor="consumptionDate"
+                            >
+                              Consumption Date
+                            </label>
+                            <input
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              type="date"
+                              id="consumptionDate"
+                              name="consumptionDate"
+                              value={sale.consumptionDate}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                            />
                           </div>
                         </div>
                         <div className="flex items-center space-x-4">
@@ -226,14 +238,14 @@ export default function AddProduct({
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
-                    onClick={addProduct}
+                    onClick={addSale}
                   >
-                    Add Product
+                    Add Consumption
                   </button>
                   <button
                     type="button"
                     className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto"
-                    onClick={() => addProductModalSetting()}
+                    onClick={() => addSaleModalSetting()}
                     ref={cancelButtonRef}
                   >
                     Cancel

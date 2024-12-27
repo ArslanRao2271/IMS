@@ -13,9 +13,9 @@ function Inventory() {
   const [stores, setAllStores] = useState([]);
 
   const authContext = useContext(AuthContext);
-  console.log('====================================');
+  console.log("====================================");
   console.log(authContext);
-  console.log('====================================');
+  console.log("====================================");
 
   useEffect(() => {
     fetchProductsData();
@@ -63,7 +63,6 @@ function Inventory() {
     setShowUpdateModal(!showUpdateModal);
   };
 
-
   // Delete item
   const deleteItem = (id) => {
     console.log("Product ID: ", id);
@@ -99,9 +98,9 @@ function Inventory() {
               <span className="font-semibold text-gray-600 text-base">
                 {products.length}
               </span>
-              <span className="font-thin text-gray-400 text-xs">
+              {/* <span className="font-thin text-gray-400 text-xs">
                 Last 7 days
-              </span>
+              </span> */}
             </div>
             <div className="flex flex-col gap-3 p-10   w-full  md:w-3/12 sm:border-y-2  md:border-x-2 md:border-y-0">
               <span className="font-semibold text-yellow-600 text-base">
@@ -112,21 +111,21 @@ function Inventory() {
                   <span className="font-semibold text-gray-600 text-base">
                     {stores.length}
                   </span>
-                  <span className="font-thin text-gray-400 text-xs">
+                  {/* <span className="font-thin text-gray-400 text-xs">
                     Last 7 days
-                  </span>
+                  </span> */}
                 </div>
-                <div className="flex flex-col">
+                {/* <div className="flex flex-col">
                   <span className="font-semibold text-gray-600 text-base">
                     $2000
                   </span>
                   <span className="font-thin text-gray-400 text-xs">
                     Revenue
                   </span>
-                </div>
+                </div> */}
               </div>
             </div>
-            <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  sm:border-y-2 md:border-x-2 md:border-y-0">
+            {/* <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  sm:border-y-2 md:border-x-2 md:border-y-0">
               <span className="font-semibold text-purple-600 text-base">
                 Top Selling
               </span>
@@ -146,8 +145,8 @@ function Inventory() {
                   <span className="font-thin text-gray-400 text-xs">Cost</span>
                 </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  border-y-2  md:border-x-2 md:border-y-0">
+            </div> */}
+            {/* <div className="flex flex-col gap-3 p-10  w-full  md:w-3/12  border-y-2  md:border-x-2 md:border-y-0">
               <span className="font-semibold text-red-600 text-base">
                 Low Stocks
               </span>
@@ -169,7 +168,7 @@ function Inventory() {
                   </span>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 
@@ -183,6 +182,7 @@ function Inventory() {
           <UpdateProduct
             updateProductData={updateProduct}
             updateModalSetting={updateProductModalSetting}
+            handlePageUpdate={handlePageUpdate}
           />
         )}
 

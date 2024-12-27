@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const PurchaseSchema = new mongoose.Schema(
+const ConsumedSchema = new mongoose.Schema(
   {
     userID: {
       type: mongoose.Schema.Types.ObjectId,
@@ -12,29 +12,21 @@ const PurchaseSchema = new mongoose.Schema(
       ref: "product",
       required: true,
     },
-    QuantityPurchased: {
+    ConsumedQuantity: {
       type: Number,
       required: true,
     },
-    PurchaseDate: {
+    ConsumptionDate: {
       type: String,
       required: true,
     },
-    TotalPurchaseAmount: {
+    TotalConsumedAmount: {
       type: Number,
-      required: true,
-    },
-    Description: {
-      type: String,
-      required: true,
-    },
-    Supplier: {
-      type: String,
       required: true,
     },
   },
   { timestamps: true }
 );
 
-const Purchase = mongoose.model("purchase", PurchaseSchema);
-module.exports = Purchase;
+const Consumed = mongoose.model("consumed", ConsumedSchema);
+module.exports = Consumed;
