@@ -21,7 +21,7 @@ function Register() {
 
   // Register User
   const registerUser = () => {
-    fetch("http://localhost:4000/api/register", {
+    fetch("https://test-backend-cyan.vercel.app/api/register", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
