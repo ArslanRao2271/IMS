@@ -19,7 +19,7 @@ function Login() {
 
   const authCheck = () => {
     setTimeout(() => {
-      fetch("https://test-backend-cyan.vercel.app")
+      fetch("http://localhost:4000/api/login")
         .then((response) => response.json())
         .then((data) => {
           alert("Successfully Login");
@@ -40,8 +40,8 @@ function Login() {
     if (form.email === "" || form.password === "") {
       alert("To login user, enter details to proceed...");
     } else {
-      fetch("https://test-backend-cyan.vercel.app", {
-        method: "GET",
+      fetch("http://localhost:4000/api/login", {
+        method: "POST",
         headers: {
           "Content-type": "application/json",
         },
