@@ -164,7 +164,7 @@ function Login() {
                 </span>
                 Sign in
               </button>
-              <p className="mt-2 text-center text-sm text-gray-600">
+              {/* <p className="mt-2 text-center text-sm text-gray-600">
                 Or{" "}
                 <span
                   className="font-medium text-indigo-600 hover:text-indigo-500"
@@ -172,7 +172,7 @@ function Login() {
                   Don't Have an Account, Please{" "}
                   <Link to="/register"> Register now </Link>
                 </span>
-              </p>
+              </p> */}
             </div>
           </form>
         </div>
