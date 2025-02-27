@@ -16,7 +16,12 @@ connectdb();
 const PORT = 4000;
 main();
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000', 
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 
 // Store API
 app.use("/api/store", storeRoute);

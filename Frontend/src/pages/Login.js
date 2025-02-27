@@ -22,18 +22,29 @@ function Login() {
       fetch("https://test-backend-cyan.vercel.app/api/login")
         .then((response) => response.json())
         .then((data) => {
-          alert("Successfully Login");
+          alert("Successfully Logged In");
           localStorage.setItem("user", JSON.stringify(data));
-          authContext.signin(data._id, () => {
-            navigate("/");
-          });
+  
+          
+          if (data.admin) {
+            
+            authContext.signin(data._id, () => {
+              navigate("/"); 
+            });
+          } else {
+            
+            authContext.signin(data._id, () => {
+              navigate("/inventory"); 
+            });
+          }
         })
         .catch((err) => {
-          alert("Wrong credentials, Try again")
+          alert("Wrong credentials, Try again");
           console.log(err);
         });
     }, 3000);
   };
+  
 
   const loginUser = (e) => {
     // Cannot send empty data

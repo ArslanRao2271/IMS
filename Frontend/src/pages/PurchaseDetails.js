@@ -17,7 +17,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Purchase items
   const fetchPurchaseData = () => {
-    fetch(`http://localhost:4000/api/purchase/get/${authContext.user}`)
+    fetch(`https://test-backend-cyan.vercel.app/api/purchase/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllPurchaseData(data);
@@ -27,7 +27,7 @@ function PurchaseDetails() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`https://test-backend-cyan.vercel.app/api/product/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         setAllProducts(data);
@@ -79,6 +79,9 @@ function PurchaseDetails() {
                   Product Name
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
+                  Product Size
+                </th>
+                <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
                   Quantity Purchased
                 </th>
                 <th className="whitespace-nowrap px-4 py-2 text-left font-medium text-gray-900">
@@ -96,6 +99,9 @@ function PurchaseDetails() {
                   <tr key={element._id}>
                     <td className="whitespace-nowrap px-4 py-2  text-gray-900">
                       {element.ProductID?.name}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-2 text-gray-700">
+                      {element.ProductID?.size}
                     </td>
                     <td className="whitespace-nowrap px-4 py-2 text-gray-700">
                       {element.QuantityPurchased}

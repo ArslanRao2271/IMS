@@ -43,7 +43,6 @@ const App = () => {
   };
 
   let value = { user, signin, signout };
-
   if (loader)
     return (
       <div
@@ -72,8 +71,12 @@ const App = () => {
               </ProtectedWrapper>
             }
           >
-            <Route index element={<Dashboard />} />
-            <Route path="/inventory" element={<Inventory />} />
+              
+              <Route path="/" element={<Dashboard />} />
+            
+          
+                          <Route path="/inventory" element={<Inventory />} />
+
             <Route path="/purchase-details" element={<PurchaseDetails />} />
             <Route path="/sales" element={<Sales />} />
             <Route path="/consumed" element={<Consumed />} />

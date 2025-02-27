@@ -1,6 +1,6 @@
-import { Fragment, useContext, useRef, useState } from "react";
+import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import AuthContext from "../AuthContext";
 
 export default function AddProduct({
@@ -8,106 +8,93 @@ export default function AddProduct({
   handlePageUpdate,
 }) {
   const authContext = useContext(AuthContext);
+  const [rawMaterials, setRawMaterials] = useState([]);
   const [product, setProduct] = useState({
-    userId: authContext.user,
-    name: [],
+    userID: authContext.user,
+    name: "",
+    type: "raw",
     manufacturer: "",
     description: "",
-    stock: "",
-    price:"",
-    size:[]
+    stock: 10,
+    price: 10,
+    size: "",
+    ingredients: [],
   });
-  console.log("Product to add", product);
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
-  const productNameOptions = [
-    { value: "Empty Water", label: "Empty Water" },
-    { value: "Empty Juice Cap", label: "Empty Juice Cap" },
-    { value: "Short Neck Red", label: "Short Neck Red" },
-    { value: "Short Neck Green", label: "Short Neck Green" },
-    { value: "Short Neck Black", label: "Short Neck Black" },
-    { value: "Short Neck Blue", label: "Short Neck Blue" },
-    { value: "Short Neck Yellow", label: "Short Neck Yellow" },
-    { value: "Fruit Juice Label", label: "Fruit Juice Label" },
-    { value: "Empty Water Cap", label: "Empty Water Cap" },
-    { value: "Flavour Juice Label", label: "Flavour Juice Label" },
-    { value: "Water Label", label: "Water Label" },
-    { value: "Juice Tray", label: "Juice Tray" },
-    { value: "Juice Carton", label: "Juice Carton" },
-    { value: "CSD Label", label: "CSD Label" },
-    { value: "Shrink Packaging", label: "Shrink Packaging" },
-    { value: "Torque", label: "Torque" },
-    { value: "Cola", label: "Cola" },
-    { value: "Funky", label: "Funky" },
-    { value: "Sting", label: "Sting" },
-    { value: "Thunder", label: "Thunder" },
-    { value: "Anar", label: "Anar" },
-    { value: "Lemony", label: "Lemony" },
-    { value: "White", label: "White" },
-    { value: "Green", label: "Green" },
-  ];
-  const productSizes = {
-    "100ml":"100ml",
-    "150ml":"150ml",
-   "200ml":"200ml",
-   "225ml":"225ml",
-   "250ml":"250ml",
-   "300ml":"300ml",
-   "345ml":"345ml",
-   "500ml":"500ml",
-    "1000ml":"1000ml",
-    "1500ml":"1500ml",
-    "2000ml":"2000ml",
-    "2250ml":"2250ml",
-    "5000ml":"5000ml",
-"30mm":"30mm",
-"28mm":"28mm",
-"44mm":"44mm",
-    "19LTR":"19LTR"
-  }
-  const handleInputChange = (key, value) => {
-    setProduct((prevState)=>({ ...prevState, [key]: value }));
-  };
 
-  const addProduct = () => {
-    const selectedProducts = product.name;  
-    const selectedSizes = product.size;     
-
-    const promises = selectedProducts.flatMap((productName) => 
-      selectedSizes.map((productSize) => {
-        const productData = {
-          userId: authContext.user,
-          name: productName,
-          manufacturer: product.manufacturer,
-          price: product.price,
-          size: productSize,
-          stock: product.stock,
-          description: product.description,
-        };
-
-        return fetch("https://test-backend-cyan.vercel.app/api/product/add", {
-          method: "POST",
-          headers: {
-            "Content-type": "application/json",
-          },
-          body: JSON.stringify(productData),
+  useEffect(() => {
+    if (product.type === "ready" && authContext.user) {
+      fetch(`http://localhost:4000/api/product/get-raw-materials/${authContext.user}`)
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch raw materials');
+          return res.json();
+        })
+        .then(setRawMaterials)
+        .catch(error => {
+          console.error('Error fetching raw materials:', error);
+          alert(`Error: ${error.message}`);
         });
-      })
-    );
-
-   
-    Promise.all(promises)
-      .then(() => {
-        alert("Products added successfully!");
-        handlePageUpdate();
-        addProductModalSetting();
-      })
-      .catch((err) => {
-        console.error("Error adding products:", err);
-      });
+    }
+  }, [product.type, authContext.user]);
+console.log(rawMaterials)
+  const handleInputChange = (key, value) => {
+    setProduct((prev) => ({ ...prev, [key]: value }));
   };
+
+  const handleIngredientChange = (index, field, value) => {
+    const updatedIngredients = product.ingredients.map((ingredient, i) =>
+      i === index ? { ...ingredient, [field]: value } : ingredient
+    );
+    setProduct((prev) => ({ ...prev, ingredients: updatedIngredients }));
+  };
+
+  const addIngredient = () => {
+    setProduct((prev) => ({
+      ...prev,
+      ingredients: [...prev.ingredients, { material: "", quantity: 0 }],
+    }));
+  };
+
+  const removeIngredient = (index) => {
+    setProduct((prev) => ({
+      ...prev,
+      ingredients: prev.ingredients.filter((_, i) => i !== index),
+    }));
+  };
+
+  const addProduct = async () => {
+    try {
+      console.log("Sending request with:", product); // Verify payload
+      
+      const response = await fetch(`http://localhost:4000/api/product/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${authContext.token}` // If using auth
+        },
+        body: JSON.stringify({
+          ...product,
+          userId: authContext.user // Ensure userId is included
+        }),
+      });
+  
+      const data = await response.json(); // Always parse JSON first
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Request failed");
+      }
+  
+      alert("Product added successfully!");
+      handlePageUpdate();
+      addProductModalSetting();
+    } catch (error) {
+      console.error("Full error:", error);
+      alert(`Error: ${error.message}`);
+    }
+  };
+
   return (
-    // Modal
     <Transition.Root show={open} as={Fragment}>
       <Dialog
         as="div"
@@ -138,7 +125,7 @@ export default function AddProduct({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl">
                 <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
                   <div className="sm:flex sm:items-start">
                     <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 sm:mx-0 sm:h-10 sm:w-10">
@@ -147,163 +134,170 @@ export default function AddProduct({
                         aria-hidden="true"
                       />
                     </div>
-                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left ">
+                    <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                       <Dialog.Title
                         as="h3"
-                        className="text-lg font-semibold leading-6 text-gray-900 "
+                        className="text-lg font-semibold leading-6 text-gray-900"
                       >
                         Add Product
                       </Dialog.Title>
-                      <form onSubmit={(e) => e.preventDefault()}>
-      <div className="grid gap-4 mb-4 sm:grid-cols-2">
-        {/* Product Name Selection */}
-        <div>
-          <label
-            htmlFor="name"
-            className="block mt-2 mb-2 text-sm font-medium text-gray-900"
-          >
-            Name
-          </label>
-          <select
-            name="name"
-            id="name"
-            value={product.name}
-            onChange={(e) =>
-              handleInputChange(
-                e.target.name,
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
-            }
-            multiple
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          >
-            <option value="">Select Product Name</option>
-            {productNameOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.label}
-              </option>
-            ))}
-          </select>
-        </div>
+                      <form onSubmit={(e) => e.preventDefault()} className="mt-4">
+                        <div className="grid gap-4 mb-4 sm:grid-cols-2">
+                          {/* Product Type */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Product Type
+                            </label>
+                            <select
+                              value={product.type}
+                              onChange={(e) => handleInputChange("type", e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            >
+                              <option value="raw">Raw Material</option>
+                              <option value="ready">Ready Product</option>
+                            </select>
+                          </div>
 
-        {/* Manufacturer */}
-        <div>
-          <label
-            htmlFor="manufacturer"
-            className="block mt-2 mb-2 text-sm font-medium text-gray-900"
-          >
-            Manufacturer
-          </label>
-          <input
-            type="text"
-            name="manufacturer"
-            id="manufacturer"
-            value={product.manufacturer}
-            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Manufacturer"
-          />
-        </div>
+                          {/* Product Name */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Product Name
+                            </label>
+                            <input
+                              type="text"
+                              value={product.name}
+                              onChange={(e) => handleInputChange("name", e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required
+                            />
+                          </div>
 
-        {/* Price */}
-        <div>
-          <label
-            htmlFor="price"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Price
-          </label>
-          <input
-            type="number"
-            name="price"
-            id="price"
-            value={product.price}
-            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="PKR"
-          />
-        </div>
+                          {/* Manufacturer */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Manufacturer
+                            </label>
+                            <input
+                              type="text"
+                              value={product.manufacturer}
+                              onChange={(e) => handleInputChange("manufacturer", e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required
+                            />
+                          </div>
 
-        {/* Size Selection */}
-        <div>
-          <label
-            htmlFor="size"
-            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-          >
-            Size
-          </label>
-          <select
-            name="size"
-            id="size"
-            value={product.size}
-            onChange={(e) =>
-              handleInputChange(
-                e.target.name,
-                Array.from(e.target.selectedOptions, (option) => option.value)
-              )
-            }
-            multiple
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-          >
-            <option value="">Select Size</option>
-            {Object.entries(productSizes).map(([key, value]) => (
-              <option key={key} value={key}>
-                {value}
-              </option>
-            ))}
-          </select>
-        </div>
+                          {/* Price */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Price
+                            </label>
+                            <input
+                              type="number"
+                              value={product.price}
+                              onChange={(e) => handleInputChange("price", Number(e.target.value))}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required
+                            />
+                          </div>
 
-        {/* Quantity */}
-        <div>
-          <label
-            htmlFor="stock"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Quantity
-          </label>
-          <input
-            type="number"
-            name="stock"
-            id="stock"
-            value={product.stock}
-            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Quantity"
-          />
-        </div>
+                          {/* Size */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Size
+                            </label>
+                            <input
+                              type="text"
+                              value={product.size}
+                              onChange={(e) => handleInputChange("size", e.target.value)}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            />
+                          </div>
 
-        {/* Description */}
-        <div className="sm:col-span-2">
-          <label
-            htmlFor="description"
-            className="block mb-2 text-sm font-medium text-gray-900"
-          >
-            Description
-          </label>
-          <textarea
-            id="description"
-            rows="5"
-            name="description"
-            className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-            placeholder="Write a description..."
-            value={product.description}
-            onChange={(e) => handleInputChange(e.target.name, e.target.value)}
-          />
-        </div>
-      </div>
+                          {/* Stock */}
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700">
+                              Stock Quantity
+                            </label>
+                            <input
+                              type="number"
+                              value={product.stock}
+                              onChange={(e) => handleInputChange("stock", Number(e.target.value))}
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                              required
+                            />
+                          </div>
 
-      {/* Submit Button */}
-      <div>
-        <button
-          type="button"
-          onClick={addProduct}
-          className="text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
-        >
-          Add Product
-        </button>
-      </div>
-    </form>
+                          {/* Ingredients for Ready Products */}
+                          {product.type === "ready" && (
+                            <div className="sm:col-span-2">
+                              <label className="block text-sm font-medium text-gray-700 mb-2">
+                                Ingredients
+                              </label>
+                              {product.ingredients.map((ingredient, index) => (
+                                <div key={index} className="flex gap-2 mb-2">
+                                  <select
+                                    value={ingredient.material}
+                                    onChange={(e) =>
+                                      handleIngredientChange(index, "material", e.target.value)
+                                    }
+                                    className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    required
+                                  >
+                                    <option value="">Select Raw Material</option>
+                                    {rawMaterials.map((material) => (
+                                      <option key={material._id} value={material._id}>
+                                        {material.name}
+                                      </option>
+                                    ))}
+                                  </select>
+                                  <input
+                                    type="number"
+                                    value={ingredient.quantity}
+                                    onChange={(e) =>
+                                      handleIngredientChange(
+                                        index,
+                                        "quantity",
+                                        parseInt(e.target.value)
+                                      )
+                                    }
+                                    placeholder="Quantity per unit"
+                                    className="w-32 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                    required
+                                  />
+                                  <button
+                                    type="button"
+                                    onClick={() => removeIngredient(index)}
+                                    className="text-red-500 hover:text-red-700"
+                                  >
+                                    <TrashIcon className="h-5 w-5" />
+                                  </button>
+                                </div>
+                              ))}
+                              <button
+                                type="button"
+                                onClick={addIngredient}
+                                className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
+                              >
+                                <PlusIcon className="h-4 w-4 mr-1" />
+                                Add Ingredient
+                              </button>
+                            </div>
+                          )}
+
+                          {/* Description */}
+                          <div className="sm:col-span-2">
+                            <label className="block text-sm font-medium text-gray-700">
+                              Description
+                            </label>
+                            <textarea
+                              value={product.description}
+                              onChange={(e) => handleInputChange("description", e.target.value)}
+                              rows="3"
+                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                            />
+                          </div>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 </div>

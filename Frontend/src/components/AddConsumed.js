@@ -26,7 +26,7 @@ export default function AddConsumed({
 
   // POST Data
   const addSale = () => {
-    fetch("http://localhost:4000/api/consumed/add", {
+    fetch("https://test-backend-cyan.vercel.app/api/consumed/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",

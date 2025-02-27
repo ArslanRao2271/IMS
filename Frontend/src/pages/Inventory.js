@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import AddProduct from "../components/AddProduct";
 import UpdateProduct from "../components/UpdateProduct";
 import AuthContext from "../AuthContext";
-
+import BulkUpload from "../components/BulkUpload";
 function Inventory() {
   const [showProductModal, setShowProductModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
@@ -11,11 +11,9 @@ function Inventory() {
   const [searchTerm, setSearchTerm] = useState();
   const [updatePage, setUpdatePage] = useState(true);
   const [stores, setAllStores] = useState([]);
-
+  const [showBulkModal, setShowBulkModal] = useState(false);
   const authContext = useContext(AuthContext);
-  console.log("====================================");
-  console.log(authContext);
-  console.log("====================================");
+ 
 
   useEffect(() => {
     fetchProductsData();
@@ -24,9 +22,10 @@ function Inventory() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`https://test-backend-cyan.vercel.app/api/product/get/${authContext.user}`)
+    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
+        console.log(data)
         setAllProducts(data);
       })
       .catch((err) => console.log(err));
@@ -185,7 +184,12 @@ function Inventory() {
             handlePageUpdate={handlePageUpdate}
           />
         )}
-
+{showBulkModal && (
+  <BulkUpload
+    closeModal={() => setShowBulkModal(false)}
+    handlePageUpdate={handlePageUpdate}
+  />
+)}
         {/* Table  */}
         <div className="overflow-x-auto rounded-lg border bg-white border-gray-200 ">
           <div className="flex justify-between pt-5 pb-3 px-3">
@@ -214,6 +218,12 @@ function Inventory() {
                 {/* <Link to="/inventory/add-product">Add Product</Link> */}
                 Add Product
               </button>
+              <button
+  className="bg-green-500 hover:bg-green-700 text-white font-bold p-2 text-xs rounded ml-2"
+  onClick={() => setShowBulkModal(true)}
+>
+  Bulk Upload (Excel)
+</button>
             </div>
           </div>
           <table className="min-w-full divide-y-2 divide-gray-200 text-sm">

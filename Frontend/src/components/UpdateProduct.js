@@ -7,13 +7,14 @@ export default function UpdateProduct({
   updateModalSetting,
   handlePageUpdate,
 }) {
-  const { _id, name, manufacturer, description, stock } = updateProductData;
+  const { _id, name, manufacturer, description, stock, size } = updateProductData;
   const [product, setProduct] = useState({
     productID: _id,
     name: name,
     manufacturer: manufacturer,
     description: description,
-    stock,
+    stock:stock,
+    size:size
   });
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
@@ -24,7 +25,7 @@ export default function UpdateProduct({
   };
 
   const updateProduct = () => {
-    fetch("http://localhost:4000/api/product/update", {
+    fetch("https://test-backend-cyan.vercel.app/api/product/update", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -104,6 +105,7 @@ export default function UpdateProduct({
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
+                              
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="Ex. Apple iMac 27&ldquo;"
                             />
@@ -123,6 +125,7 @@ export default function UpdateProduct({
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }
+                              
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="Ex. Apple"
                             />
@@ -139,6 +142,26 @@ export default function UpdateProduct({
                               name="stock"
                               id="stock"
                               value={product.stock}
+                              onChange={(e) =>
+                                handleInputChange(e.target.name, e.target.value)
+                              }
+                              disabled
+                              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                              placeholder="Quantity"
+                            />
+                          </div>
+                          <div>
+                            <label
+                              for="size"
+                              className="block mb-2 text-sm font-medium text-gray-900"
+                            >
+                              Size
+                            </label>
+                            <input
+                              type="string"
+                              name="size"
+                              id="size"
+                              value={product.size}
                               onChange={(e) =>
                                 handleInputChange(e.target.name, e.target.value)
                               }

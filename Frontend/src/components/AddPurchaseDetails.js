@@ -21,7 +21,27 @@ export default function AddPurchaseDetails({
   const cancelButtonRef = useRef(null);
 
   console.log("PPu: ", purchase);
-
+  const [selectedProductPrice, setSelectedProductPrice] = useState(0);
+  const handleProductSelection = (productId) => {
+    const selectedProduct = products.find((product) => product._id === productId);
+    if (selectedProduct) {
+      setSelectedProductPrice(selectedProduct.price);
+      setPurchase((prevPurchase) => ({
+        ...prevPurchase,
+        productID: productId,
+      }));
+    }
+  };
+  const handleQuantityChange = (value) => {
+    setPurchase((prevPurchase) => {
+      const totalAmount = selectedProductPrice * value;
+      return {
+        ...prevPurchase,
+        quantityPurchased: value,
+        totalPurchaseAmount: totalAmount,
+      };
+    });
+  };
   // Handling Input Change for input fields
   const handleInputChange = (key, value) => {
     setPurchase({ ...purchase, [key]: value });
@@ -29,7 +49,7 @@ export default function AddPurchaseDetails({
 
   // POST Data
   const addSale = () => {
-    fetch("http://localhost:4000/api/purchase/add", {
+    fetch("https://test-backend-cyan.vercel.app/api/purchase/add", {
       method: "POST",
       headers: {
         "Content-type": "application/json",
@@ -106,7 +126,7 @@ export default function AddPurchaseDetails({
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               name="productID"
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleProductSelection(e.target.value)
                               }
                             >
                               <option selected="">Select Products</option>
@@ -132,7 +152,7 @@ export default function AddPurchaseDetails({
                               id="quantityPurchased"
                               value={purchase.quantityPurchased}
                               onChange={(e) =>
-                                handleInputChange(e.target.name, e.target.value)
+                                handleQuantityChange(e.target.value)
                               }
                               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                               placeholder="Quantity"
