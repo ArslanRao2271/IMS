@@ -45,7 +45,7 @@ export default function BulkUpload({ closeModal, handlePageUpdate }) {
         });
 
         // Send to backend
-        const response = await fetch("http://localhost:4000/api/product/bulk-upload", {
+        const response = await fetch("https://test-backend-cyan.vercel.app/api/product/bulk-upload", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

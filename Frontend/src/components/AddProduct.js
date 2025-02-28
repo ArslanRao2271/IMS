@@ -25,7 +25,7 @@ export default function AddProduct({
 
   useEffect(() => {
     if (product.type === "ready" && authContext.user) {
-      fetch(`http://localhost:4000/api/product/get-raw-materials/${authContext.user}`)
+      fetch(`https://test-backend-cyan.vercel.app/api/product/get-raw-materials/${authContext.user}`)
         .then((res) => {
           if (!res.ok) throw new Error('Failed to fetch raw materials');
           return res.json();
@@ -67,7 +67,7 @@ console.log(rawMaterials)
     try {
       console.log("Sending request with:", product); // Verify payload
       
-      const response = await fetch(`http://localhost:4000/api/product/add`, {
+      const response = await fetch(`https://test-backend-cyan.vercel.app/api/product/add`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

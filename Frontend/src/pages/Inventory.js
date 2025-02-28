@@ -22,7 +22,7 @@ function Inventory() {
 
   // Fetching Data of All Products
   const fetchProductsData = () => {
-    fetch(`http://localhost:4000/api/product/get/${authContext.user}`)
+    fetch(`https://test-backend-cyan.vercel.app/api/product/get/${authContext.user}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
