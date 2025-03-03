@@ -65,8 +65,6 @@ console.log(rawMaterials)
 
   const addProduct = async () => {
     try {
-      console.log("Sending request with:", product); // Verify payload
-      
       const response = await fetch(`https://test-backend-cyan.vercel.app/api/product/add`, {
         method: "POST",
         headers: {
