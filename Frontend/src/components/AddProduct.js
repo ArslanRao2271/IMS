@@ -2,95 +2,97 @@ import { Fragment, useContext, useEffect, useRef, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import AuthContext from "../AuthContext";
-
+import RawMaterialForm from "./RawMaterialForm";
+import ReadyProductForm from "./ReadyProductForm";
 export default function AddProduct({
   addProductModalSetting,
   handlePageUpdate,
 }) {
+  const [productType, setProductType] = useState("raw");
   const authContext = useContext(AuthContext);
-  const [rawMaterials, setRawMaterials] = useState([]);
-  const [product, setProduct] = useState({
-    userID: authContext.user,
-    name: "",
-    type: "raw",
-    manufacturer: "",
-    description: "",
-    stock: 10,
-    price: 10,
-    size: "",
-    ingredients: [],
-  });
+  // const [rawMaterials, setRawMaterials] = useState([]);
+  // const [product, setProduct] = useState({
+  //   userID: authContext.user,
+  //   name: "",
+  //   type: "raw",
+  //   manufacturer: "",
+  //   description: "",
+  //   stock: 0,
+  //   price: 0,
+  //   size: "",
+  //   ingredients: [],
+  // });
   const [open, setOpen] = useState(true);
   const cancelButtonRef = useRef(null);
 
-  useEffect(() => {
-    if (product.type === "ready" && authContext.user) {
-      fetch(`https://test-backend-cyan.vercel.app/api/product/get-raw-materials/${authContext.user}`)
-        .then((res) => {
-          if (!res.ok) throw new Error('Failed to fetch raw materials');
-          return res.json();
-        })
-        .then(setRawMaterials)
-        .catch(error => {
-          console.error('Error fetching raw materials:', error);
-          alert(`Error: ${error.message}`);
-        });
-    }
-  }, [product.type, authContext.user]);
-console.log(rawMaterials)
-  const handleInputChange = (key, value) => {
-    setProduct((prev) => ({ ...prev, [key]: value }));
-  };
+//   useEffect(() => {
+//     if (product.type === "ready" && authContext.user) {
+//       fetch(`https://test-backend-cyan.vercel.app/api/product/get-raw-materials/${authContext.user}`)
+//         .then((res) => {
+//           if (!res.ok) throw new Error('Failed to fetch raw materials');
+//           return res.json();
+//         })
+//         .then(setRawMaterials)
+//         .catch(error => {
+//           console.error('Error fetching raw materials:', error);
+//           alert(`Error: ${error.message}`);
+//         });
+//     }
+//   }, [product.type, authContext.user]);
+// console.log(rawMaterials)
+//   const handleInputChange = (key, value) => {
+//     setProduct((prev) => ({ ...prev, [key]: value }));
+//   };
 
-  const handleIngredientChange = (index, field, value) => {
-    const updatedIngredients = product.ingredients.map((ingredient, i) =>
-      i === index ? { ...ingredient, [field]: value } : ingredient
-    );
-    setProduct((prev) => ({ ...prev, ingredients: updatedIngredients }));
-  };
+//   const handleIngredientChange = (index, field, value) => {
+//     const updatedIngredients = product.ingredients.map((ingredient, i) =>
+//       i === index ? { ...ingredient, [field]: value } : ingredient
+//     );
+//     setProduct((prev) => ({ ...prev, ingredients: updatedIngredients }));
+//   };
 
-  const addIngredient = () => {
-    setProduct((prev) => ({
-      ...prev,
-      ingredients: [...prev.ingredients, { material: "", quantity: 0 }],
-    }));
-  };
+//   const addIngredient = () => {
+//     setProduct((prev) => ({
+//       ...prev,
+//       ingredients: [...prev.ingredients, { material: "", quantity: 0 }],
+//     }));
+//   };
 
-  const removeIngredient = (index) => {
-    setProduct((prev) => ({
-      ...prev,
-      ingredients: prev.ingredients.filter((_, i) => i !== index),
-    }));
-  };
+//   const removeIngredient = (index) => {
+//     setProduct((prev) => ({
+//       ...prev,
+//       ingredients: prev.ingredients.filter((_, i) => i !== index),
+//     }));
+//   };
 
-  const addProduct = async () => {
-    try {
-      const response = await fetch(`https://test-backend-cyan.vercel.app/api/product/add`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${authContext.token}` // If using auth
-        },
-        body: JSON.stringify({
-          ...product,
-          userId: authContext.user // Ensure userId is included
-        }),
-      });
+//   const addProduct = async () => {
+//     try {
+//       const response = await fetch(`https://test-backend-cyan.vercel.app/api/product/add`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//           "Authorization": `Bearer ${authContext.token}` // If using auth
+//         },
+//         body: JSON.stringify({
+//           ...product,
+//           userId: authContext.user // Ensure userId is included
+//         }),
+//       });
   
-      const data = await response.json(); // Always parse JSON first
+//       const data = await response.json(); // Always parse JSON first
       
-      if (!response.ok) {
-        throw new Error(data.error || "Request failed");
-      }
+//       if (!response.ok) {
+//         throw new Error(data.error || "Request failed");
+//       }
   
-      alert("Product added successfully!");
-      handlePageUpdate();
-      addProductModalSetting();
-    } catch (error) {
-      console.error("Full error:", error);
-      alert(`Error: ${error.message}`);
-    }
-  };
+//       alert("Product added successfully!");
+//       handlePageUpdate();
+//       addProductModalSetting();
+//     } catch (error) {
+//       console.error("Full error:", error);
+//       alert(`Error: ${error.message}`);
+//     }
+//   };
 
   return (
     <Transition.Root show={open} as={Fragment}>
@@ -139,167 +141,41 @@ console.log(rawMaterials)
                       >
                         Add Product
                       </Dialog.Title>
-                      <form onSubmit={(e) => e.preventDefault()} className="mt-4">
-                        <div className="grid gap-4 mb-4 sm:grid-cols-2">
-                          {/* Product Type */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                              Product Type
-                            </label>
-                            <select
-                              value={product.type}
-                              onChange={(e) => handleInputChange("type", e.target.value)}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            >
-                              <option value="raw">Raw Material</option>
-                              <option value="ready">Ready Product</option>
-                            </select>
-                          </div>
-
-                          {/* Product Name */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                              Product Name
-                            </label>
-                            <input
-                              type="text"
-                              value={product.name}
-                              onChange={(e) => handleInputChange("name", e.target.value)}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              required
-                            />
-                          </div>
-
-                          {/* Manufacturer */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                              Manufacturer
-                            </label>
-                            <input
-                              type="text"
-                              value={product.manufacturer}
-                              onChange={(e) => handleInputChange("manufacturer", e.target.value)}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              required
-                            />
-                          </div>
-
-                          {/* Price */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                              Price
-                            </label>
-                            <input
-                              type="number"
-                              value={product.price}
-                              onChange={(e) => handleInputChange("price", Number(e.target.value))}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              required
-                            />
-                          </div>
-
-                          {/* Size */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                              Size
-                            </label>
-                            <input
-                              type="text"
-                              value={product.size}
-                              onChange={(e) => handleInputChange("size", e.target.value)}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            />
-                          </div>
-
-                          {/* Stock */}
-                          <div>
-                            <label className="block text-sm font-medium text-gray-700">
-                              Stock Quantity
-                            </label>
-                            <input
-                              type="number"
-                              value={product.stock}
-                              onChange={(e) => handleInputChange("stock", Number(e.target.value))}
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                              required
-                            />
-                          </div>
-
-                          {/* Ingredients for Ready Products */}
-                          {product.type === "ready" && (
-                            <div className="sm:col-span-2">
-                              <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Ingredients
-                              </label>
-                              {product.ingredients.map((ingredient, index) => (
-                                <div key={index} className="flex gap-2 mb-2">
-                                  <select
-                                    value={ingredient.material}
-                                    onChange={(e) =>
-                                      handleIngredientChange(index, "material", e.target.value)
-                                    }
-                                    className="flex-1 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                    required
-                                  >
-                                    <option value="">Select Raw Material</option>
-                                    {rawMaterials.map((material) => (
-                                      <option key={material._id} value={material._id}>
-                                        {material.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  <input
-                                    type="number"
-                                    value={ingredient.quantity}
-                                    onChange={(e) =>
-                                      handleIngredientChange(
-                                        index,
-                                        "quantity",
-                                        parseInt(e.target.value)
-                                      )
-                                    }
-                                    placeholder="Quantity per unit"
-                                    className="w-32 rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                                    required
-                                  />
-                                  <button
-                                    type="button"
-                                    onClick={() => removeIngredient(index)}
-                                    className="text-red-500 hover:text-red-700"
-                                  >
-                                    <TrashIcon className="h-5 w-5" />
-                                  </button>
-                                </div>
-                              ))}
-                              <button
-                                type="button"
-                                onClick={addIngredient}
-                                className="mt-2 text-sm text-blue-600 hover:text-blue-800 flex items-center"
-                              >
-                                <PlusIcon className="h-4 w-4 mr-1" />
-                                Add Ingredient
-                              </button>
-                            </div>
-                          )}
-
-                          {/* Description */}
-                          <div className="sm:col-span-2">
-                            <label className="block text-sm font-medium text-gray-700">
-                              Description
-                            </label>
-                            <textarea
-                              value={product.description}
-                              onChange={(e) => handleInputChange("description", e.target.value)}
-                              rows="3"
-                              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            />
-                          </div>
-                        </div>
-                      </form>
+                      <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Product Type
+                  </label>
+                  <select
+                    value={productType}
+                    onChange={(e) => setProductType(e.target.value)}
+                    className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  >
+                    <option value="raw">Raw Material</option>
+                    <option value="ready">Ready Product</option>
+                  </select>
+                </div>
+{productType === "raw" ? (
+                  <RawMaterialForm
+                    authContext={authContext}
+                    onSuccess={() => {
+                      handlePageUpdate();
+                      addProductModalSetting();
+                    }}
+                  />
+                ) : (
+                  <ReadyProductForm
+                    authContext={authContext}
+                    onSuccess={() => {
+                      handlePageUpdate();
+                      addProductModalSetting();
+                    }}
+                  />
+                )}
+                    
                     </div>
                   </div>
                 </div>
-                <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                   <button
                     type="button"
                     className="inline-flex w-full justify-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 sm:ml-3 sm:w-auto"
@@ -315,7 +191,7 @@ console.log(rawMaterials)
                   >
                     Cancel
                   </button>
-                </div>
+                </div> */}
               </Dialog.Panel>
             </Transition.Child>
           </div>
